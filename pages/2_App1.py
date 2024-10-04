@@ -79,12 +79,16 @@ if uploaded_file is not None:
         valor_filtrar = st.text_input(f"Ingresa el valor para filtrar en '{columna_filtrar}':")
 
         if valor_filtrar:
-            df_filtrado = df[df[columna_filtrar].astype(str).str.contains(valor_filtrar, case=False, na=False)]
-            st.write(f"#### Datos filtrados por **{columna_filtrar}** que contienen '**{valor_filtrar}**':")
-            st.dataframe(df_filtrado)
+            # Asegurarse de que la columna existe antes de filtrar
+            if columna_filtrar in df.columns:
+                df_filtrado = df[df[columna_filtrar].astype(str).str.contains(valor_filtrar, case=False, na=False)]
+                st.write(f"#### Datos filtrados por **{columna_filtrar}** que contienen '**{valor_filtrar}**':")
+                st.dataframe(df_filtrado)
 
-            # Descargar CSV filtrado
-            st.markdown(descargar_csv(df_filtrado), unsafe_allow_html=True)
+                # Descargar CSV filtrado
+                st.markdown(descargar_csv(df_filtrado), unsafe_allow_html=True)
+            else:
+                st.warning(f"La columna '{columna_filtrar}' no existe en el DataFrame.")
 
     except Exception as e:
         st.error(f"Ocurrió un error al procesar el archivo: {e}")
